@@ -10,9 +10,19 @@ const formatChannels = require('../util/formatChannels');
  * @param {} flags 
  * @returns 
  */
-function handler(msg, args = [], { remove } = {}) {
+function handler(msg, args = [], { remove, clear } = {}) {
   const { guild } = msg.channel;
   const { channels } = config.get(guild);
+
+  if (clear) {
+    if (!channels.length) return undefined;
+    return {
+      embeds: [{
+        title: `Cleared channel${channels.length ? 's' : ''}`,
+        description: `Removed: ${formatChannels(channels).join(' ')}`,
+      }],
+    };
+  }
 
   const removeChannels = remove || ['disable', 'remove'].includes(msg.command);
 
@@ -53,9 +63,10 @@ module.exports = new Command({
   description: '',
   flags: [{
     alias: ['remove', '-', 'r'],
-    usage: '',
+    usage: 'Remove channel(s)',
   }, {
     alias: ['clear'],
+    description: 'Clear channel list',
     usage: '',
   }],
   disabled: false,

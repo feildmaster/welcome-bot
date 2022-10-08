@@ -1,0 +1,19 @@
+{
+  "name": "welcomebot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/config.js",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chat-commands": "^0.7.1",
+    "conf": "^10.1.2",
+    "dotenv": "^16.0.1",
+    "eris": "^0.17.1"
+  }
+}

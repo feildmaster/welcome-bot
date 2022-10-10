@@ -2,6 +2,8 @@ require('dotenv').config();
 const Eris = require('eris');
 const config = require('./src/config');
 const loadCommands = require('./src/commands');
+const formatMessage = require('./src/util/formatMessage');
+const isDisabled = require('./src/util/isDisabled');
 
 const MINUTE = 60000;
 
@@ -12,7 +14,8 @@ const discord = new Eris.Client(token);
 loadCommands(discord, 'help');
 discord.on('guildMemberAdd', handleJoin)
   .on('guildMemberRemove', handleLeave)
-  .on('connect', () => console.log(''));
+  .on('connect', () => console.info('Connected'))
+  .connect();
 
 /**
  * @param {Eris.Guild} guild 
@@ -42,8 +45,7 @@ function invalid(user, guild, joinLeave) {
 
   if (!joinLeave) return false;
   const { channels = [], [joinLeave]: { enabled = false } } = config.get(guild, false);
-  return (Number.isInteger(enabled) && enabled <= Date.now()) || // Soft time-out disable
-    enabled === false || // Hard disable
+  return isDisabled(enabled) || // Disabled
     !channels.length || // Not setup
     throttled(guild); // Throttled
 }
@@ -69,10 +71,7 @@ function throttled(guild) {
 
 function getMessage(message, mention) {
   return {
-    content: message.replace(/\$user/g, mention),
+    content: formatMessage(message, mention),
     allowedMentions: { users: [] },
   };
 }
-
-discord.connect()
-  .then(() => console.log('Connected'));

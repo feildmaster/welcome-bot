@@ -2,6 +2,7 @@ const Command = require('chat-commands/src/command/user');
 const { Constants: { Permissions } } = require('eris');
 const config = require('../config');
 const formatMessage = require('../util/formatMessage');
+const { MINUTE } = require('../util/constants');
 const isDisabled = require('../util/isDisabled');
 
 function handler(msg, _ = [], flags = {}) {
@@ -9,11 +10,12 @@ function handler(msg, _ = [], flags = {}) {
   const { guild } = msg.channel;
   const {
     [command]: data,
-  } = config.get(guild, false); // TODO: does this need raw enable
+  } = config.get(guild, 'convert');
 
   [
     [updateEnabled, 'enabled'],
     [updateMessage, 'message'],
+    [throttle, 'enabled'],
   ].forEach(([func, key]) => {
     if (func.call(this, data, flags)) {
       // Update file if changed
@@ -24,6 +26,7 @@ function handler(msg, _ = [], flags = {}) {
   return {
     embeds: [{
       title: `${isDisabled(data.enabled) ? '🔴' : '🟢'} Settings`,
+      description: Number.isInteger(data.enabled) ? `Enabling <t:${Math.floor(data.enabled/1000)}:R>` : '',
       fields: [{
         name: 'Message',
         value: `${formatMessage(data.message, msg.author.mention)}
@@ -52,6 +55,13 @@ function updateMessage(data, flags) {
     return true;
   }
 }
+function throttle(data, flags) {
+  // Can't throttle if hard-disabled
+  if (data.enabled && this.flag('throttle', flags)) {
+    data.enabled = Date.now() + 10 * MINUTE;
+    return true;
+  }
+}
 
 module.exports = new Command({
   title: 'Settings',
@@ -74,6 +84,9 @@ module.exports = new Command({
     alias: ['message', 'm'],
     description: 'Set <label> message, use `$user` to insert username.',
     usage: '<message>',
+  }, {
+    alias: ['throttle', 'pause'],
+    description: 'Disable <label> for 10 minutes',
   }],
   handler,
 }, [Permissions.manageGuild]);

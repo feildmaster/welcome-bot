@@ -1,11 +1,10 @@
 require('dotenv').config();
 const Eris = require('eris');
 const config = require('./src/config');
-const loadCommands = require('./src/commands');
 const formatMessage = require('./src/util/formatMessage');
 const isDisabled = require('./src/util/isDisabled');
-
-const MINUTE = 60000;
+const loadCommands = require('./src/commands');
+const { MINUTE } = require('./src/util/constants');
 
 const token = process.env.TOKEN;
 if (!token) throw new Error('Missing token');
@@ -15,6 +14,7 @@ loadCommands(discord, 'help');
 discord.on('guildMemberAdd', handleJoin)
   .on('guildMemberRemove', handleLeave)
   .on('connect', () => console.info('Connected'))
+  .on('error', console.error)
   .connect();
 
 /**

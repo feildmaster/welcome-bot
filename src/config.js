@@ -57,7 +57,8 @@ function get({ id }, convert = true) {
     ['join', 'leave'].forEach(key => {
       const { enabled } = defaults[key];
       if (Number.isInteger(enabled)) {
-        defaults[key].enabled = enabled < Date.now(); // You lose the timeout number with this, but you have only one enabled state
+         // By passing a truthy for `convert` you can keep the raw number if it's soft-disabled
+        defaults[key].enabled = enabled < Date.now() || convert !== true && enabled;
       }
     });
   }

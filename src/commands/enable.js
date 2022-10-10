@@ -1,5 +1,5 @@
-const Command = require('chat-commands/src/command');
 const Eris = require('eris');
+const UserCommand = require('chat-commands/src/command/user');
 const config = require('../config');
 const formatChannels = require('../util/formatChannels');
 
@@ -14,8 +14,9 @@ function handler(msg, args = [], { remove, clear } = {}) {
   const { guild } = msg.channel;
   const { channels } = config.get(guild);
 
-  if (clear) {
-    if (!channels.length) return undefined;
+  if (clear || msg.command === 'clear') {
+    if (!channels.length) return undefined; // Do nothing
+    config.set(guild, { channels: [] });
     return {
       embeds: [{
         title: `Cleared channel${channels.length ? 's' : ''}`,
@@ -24,7 +25,7 @@ function handler(msg, args = [], { remove, clear } = {}) {
     };
   }
 
-  const removeChannels = remove || ['disable', 'remove'].includes(msg.command);
+  const removeChannels = remove || msg.command === 'remove';
 
   const msgChannels = msg.channelMentions.length ? msg.channelMentions : [msg.channel.id];
   const applied = msgChannels.filter((channel) => {
@@ -48,27 +49,27 @@ function handler(msg, args = [], { remove, clear } = {}) {
       description: applied.length ? formatChannels(applied).join(' ') : 'None',
       fields: [{
         name: 'Channel List',
-        value: formatChannels(channels).join(' '),
+        value: channels.length ? formatChannels(channels).join(' ') : 'Empty',
       }],
       color: 0x1834e7,
     }],
   };
 }
 
-module.exports = new Command({
+module.exports = new UserCommand({
   title: '',
-  alias: ['enable', 'init', 'disable', 'remove'],
+  alias: ['init', 'remove', 'clear'],
   examples: [],
-  usage: '[...#channel]',
+  usage: '[#channel...]',
   description: '',
   flags: [{
     alias: ['remove', '-', 'r'],
-    usage: 'Remove channel(s)',
+    usage: '[#channel...]',
+    description: 'Remove channel(s)',
   }, {
     alias: ['clear'],
     description: 'Clear channel list',
     usage: '',
   }],
-  disabled: false,
   handler,
 });

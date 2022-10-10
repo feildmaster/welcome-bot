@@ -1,8 +1,9 @@
 const Eris = require('eris');
+const loader = require('chat-commands/src/loader');
 const loadPrefixes = require('chat-commands/src/prefixes');
 const parseFlags = require('chat-commands/src/flags');
-const commands = require('../util/commandLoader')(__dirname);
 
+const commands = loader(__dirname);
 const prefixes = loadPrefixes(process.env.PREFIXES, ['@mention']);
 
 /**

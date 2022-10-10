@@ -1,7 +1,8 @@
-const Command = require('chat-commands/src/command');
-const Eris = require('eris');
+const UserCommand = require('chat-commands/src/command/user');
 const config = require('../config');
 const formatChannels = require('../util/formatChannels');
+const formatMessage = require('../util/formatMessage');
+const isDisabled = require('../util/isDisabled');
 
 function handler(msg, args = [], flags = {}) {
   const {
@@ -15,26 +16,25 @@ function handler(msg, args = [], flags = {}) {
       title: `Configuration`,
       fields: [{
         name: 'Channel List',
-        value: channels.length ? formatChannels(channels).join(' ') : 'None',
+        value: channels.length ? formatChannels(channels).join(' ') : 'Empty',
       }, {
-        ...format('Join', join),
+        ...format('Join', join, msg.author),
       }, {
-        ...format('Leave', leave),
+        ...format('Leave', leave, msg.author),
       }],
       color: 0x1834e7,
     }],
   };
 }
 
-function format(name, { enabled, message: value }) {
-  const enable = enabled ? enabled === true || enabled < Date.now() : false;
+function format(name, { enabled, message }, { mention }) {
   return {
-    name: `${enable ? '🟢' : '🔴'} ${name}`,
-    value,
+    name: `${isDisabled(enabled) ? '🔴' : '🟢'} ${name}`,
+    value: formatMessage(message, mention),
   };
 }
 
-module.exports = new Command({
+module.exports = new UserCommand({
   title: '',
   alias: ['info'],
   examples: [],
@@ -44,6 +44,5 @@ module.exports = new Command({
     alias: [],
     usage: '',
   }],
-  disabled: false,
   handler,
 });

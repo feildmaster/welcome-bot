@@ -1,5 +1,5 @@
+const Command = require('chat-commands/src/command/user');
 const Eris = require('eris');
-const UserCommand = require('chat-commands/src/command/user');
 const config = require('../config');
 const formatChannels = require('../util/formatChannels');
 
@@ -55,8 +55,8 @@ function handler(msg, args = [], { remove, clear } = {}) {
   };
 }
 
-module.exports = new UserCommand({
-  title: 'Channel Controller',
+module.exports = new Command({
+  title: '', // TODO: better title
   alias: ['channel', 'chan', 'init', 'add', 'remove', 'clear'],
   examples: [
     ['> <prefix> add', 'Add current channel'],

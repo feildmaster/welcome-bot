@@ -1,4 +1,4 @@
-const UserCommand = require('chat-commands/src/command/user');
+const Command = require('chat-commands/src/command/user');
 const config = require('../config');
 const formatChannels = require('../util/formatChannels');
 const formatMessage = require('../util/formatMessage');
@@ -33,7 +33,7 @@ function format(name, { enabled, message }, { mention }) {
   };
 }
 
-module.exports = new UserCommand({
+module.exports = new Command({
   title: 'Channel List',
   alias: ['info'],
   handler,

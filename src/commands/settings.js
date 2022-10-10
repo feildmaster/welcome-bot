@@ -1,4 +1,5 @@
-const UserCommand = require('chat-commands/src/command/user');
+const Command = require('chat-commands/src/command/user');
+const { Constants: { Permissions } } = require('eris');
 const config = require('../config');
 const formatMessage = require('../util/formatMessage');
 const isDisabled = require('../util/isDisabled');
@@ -52,7 +53,7 @@ function updateMessage(data, flags) {
   }
 }
 
-module.exports = new UserCommand({
+module.exports = new Command({
   title: 'Settings',
   alias: ['join', 'leave'],
   examples: [
@@ -60,7 +61,6 @@ module.exports = new UserCommand({
     ['> <prefix> <label> --d', 'Disables <label> message'],
     ['> <prefix> <label> --m This is a new message that pings $user!', 'Set <label> message'],
   ].map(a => a.join('\n\t')),
-  usage: '',
   description: '',
   flags: [{
     alias: ['enable', 'e', '+'],
@@ -76,4 +76,4 @@ module.exports = new UserCommand({
     usage: '<message>',
   }],
   handler,
-});
+}, [Permissions.manageGuild]);

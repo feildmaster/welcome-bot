@@ -56,7 +56,7 @@ function handler(msg, args = [], { remove, clear } = {}) {
 }
 
 module.exports = new UserCommand({
-  title: 'Channel List',
+  title: 'Channel Controller',
   alias: ['channel', 'chan', 'init', 'add', 'remove', 'clear'],
   examples: [
     ['> <prefix> add', 'Add current channel'],

@@ -7,7 +7,6 @@ const formatChannels = require('../util/formatChannels');
  * 
  * @param {Eris.Message} msg 
  * @param {String[]} args 
- * @param {} flags 
  * @returns 
  */
 function handler(msg, args = [], { remove, clear } = {}) {
@@ -57,19 +56,22 @@ function handler(msg, args = [], { remove, clear } = {}) {
 }
 
 module.exports = new UserCommand({
-  title: '',
-  alias: ['init', 'remove', 'clear'],
-  examples: [],
+  title: 'Channel List',
+  alias: ['channel', 'chan', 'init', 'add', 'remove', 'clear'],
+  examples: [
+    ['> <prefix> add', 'Add current channel'],
+    ['> <prefix> add #channel1 #channel3', 'Add channel one and three'],
+    ['> <prefix> remove #channel2', 'Remove channel two'],
+    ['> <prefix> clear', 'Clear channel list'],
+  ].map(a => a.join('\n')),
   usage: '[#channel...]',
-  description: '',
+  description: 'Modify the channel list',
   flags: [{
     alias: ['remove', '-', 'r'],
-    usage: '[#channel...]',
     description: 'Remove channel(s)',
   }, {
     alias: ['clear'],
     description: 'Clear channel list',
-    usage: '',
   }],
   handler,
 });

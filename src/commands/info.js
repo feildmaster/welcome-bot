@@ -2,7 +2,6 @@ const UserCommand = require('chat-commands/src/command/user');
 const config = require('../config');
 const formatChannels = require('../util/formatChannels');
 const formatMessage = require('../util/formatMessage');
-const isDisabled = require('../util/isDisabled');
 
 function handler(msg, args = [], flags = {}) {
   const {
@@ -29,20 +28,13 @@ function handler(msg, args = [], flags = {}) {
 
 function format(name, { enabled, message }, { mention }) {
   return {
-    name: `${isDisabled(enabled) ? '🔴' : '🟢'} ${name}`,
+    name: `${enabled ? '🟢' : '🔴'} ${name}`,
     value: formatMessage(message, mention),
   };
 }
 
 module.exports = new UserCommand({
-  title: '',
+  title: 'Channel List',
   alias: ['info'],
-  examples: [],
-  usage: '',
-  description: '',
-  flags: [{
-    alias: [],
-    usage: '',
-  }],
   handler,
 });

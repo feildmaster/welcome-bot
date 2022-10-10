@@ -8,7 +8,7 @@ function handler(msg, _ = [], flags = {}) {
   const { guild } = msg.channel;
   const {
     [command]: data,
-  } = config.get(guild, false);
+  } = config.get(guild, false); // TODO: does this need raw enable
 
   [
     [updateEnabled, 'enabled'],

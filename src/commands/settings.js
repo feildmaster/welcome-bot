@@ -2,7 +2,7 @@ const Command = require('chat-commands/src/command/user');
 const { Constants: { Permissions } } = require('eris');
 const config = require('../config');
 const formatMessage = require('../util/formatMessage');
-const { MINUTE } = require('../util/constants');
+const { MINUTE, COLOR } = require('../util/constants');
 const isDisabled = require('../util/isDisabled');
 
 function handler(msg, _ = [], flags = {}) {
@@ -35,6 +35,7 @@ function handler(msg, _ = [], flags = {}) {
       footer: {
         text: '`$user` -> username',
       },
+      color: COLOR,
     }],
   };
 }

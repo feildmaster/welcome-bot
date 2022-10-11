@@ -1,6 +1,7 @@
 const Command = require('chat-commands/src/command/user');
 const Eris = require('eris');
 const config = require('../config');
+const { COLOR } = require('../util/constants');
 const formatChannels = require('../util/formatChannels');
 
 /**
@@ -20,6 +21,7 @@ function handler(msg, args = [], { remove, clear } = {}) {
       embeds: [{
         title: `Cleared channel${channels.length ? 's' : ''}`,
         description: `Removed: ${formatChannels(channels).join(' ')}`,
+        color: COLOR,
       }],
     };
   }
@@ -50,7 +52,7 @@ function handler(msg, args = [], { remove, clear } = {}) {
         name: 'Channel List',
         value: channels.length ? formatChannels(channels).join(' ') : 'Empty',
       }],
-      color: 0x1834e7,
+      color: COLOR,
     }],
   };
 }

@@ -1,5 +1,6 @@
 const Command = require('chat-commands/src/command/user');
 const config = require('../config');
+const { COLOR } = require('../util/constants');
 const formatChannels = require('../util/formatChannels');
 const formatMessage = require('../util/formatMessage');
 
@@ -21,7 +22,7 @@ function handler(msg, args = [], flags = {}) {
       }, {
         ...format('Leave', leave, msg.author),
       }],
-      color: 0x1834e7,
+      color: COLOR,
     }],
   };
 }

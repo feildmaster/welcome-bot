@@ -19,15 +19,15 @@ module.exports = (discord, fallback = '') => {
     const from = prefixes.map((pref) => pref.replace('@mention', discord.user.mention)).filter(_ => _);
     const prefix = from.find((pref) => filtered.startsWith(pref));
     if (!prefix) return;
-  
+
     const {
       message: rawText = '',
       flags = {},
     } = parseFlags(filtered.substring(prefix.length));
-  
+
     const args = rawText.split(/\s+/g);
     const command = args.shift() || fallback;
-  
+
     msg.prefix = prefix;
     msg.command = command;
     msg.reply = (content, file) => {
@@ -51,7 +51,7 @@ module.exports = (discord, fallback = '') => {
     commands
       .then((commandMap) => flags.help ? commandMap.get('help') : commandMap.get(command.toLowerCase()))
       .then((command) => {
-        if (!command || !command.enabled(msg) && !bypass(msg, { check: flags.admin })) return undefined;
+        if (!command || !command.enabled(msg)) return undefined;
         if (flags.help) {
           if (msg.command) args.unshift(msg.command);
           msg.command = 'help';

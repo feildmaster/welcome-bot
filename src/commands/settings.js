@@ -33,7 +33,7 @@ function handler(msg, _ = [], flags = {}) {
         ${!data.message.includes('$user') ? '⚠️ Warning: $user is missing from message' : ''}`,
       }],
       footer: {
-        text: '`$user` -> username',
+        text: '$user -> username',
       },
       color: COLOR,
     }],

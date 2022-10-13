@@ -6,9 +6,13 @@ const isDisabled = require('./src/util/isDisabled');
 const loadCommands = require('./src/commands');
 const { MINUTE } = require('./src/util/constants');
 
+const { Intents } = Eris.Constants;
+
 const token = process.env.TOKEN;
 if (!token) throw new Error('Missing token');
-const discord = new Eris.Client(token);
+const discord = new Eris.Client(token, {
+  intents: Intents.allNonPrivileged | Intents.guildMessages | Intents.guildMembers,
+});
 
 loadCommands(discord, 'help');
 discord.on('guildMemberAdd', handleJoin)
@@ -24,8 +28,8 @@ discord.on('guildMemberAdd', handleJoin)
 function handleJoin(guild, user) {
   if (invalid(user, guild, 'join')) return;
 
-  const { channels = [], leave: { message = '' } } = config.get(guild);
-  channels.forEach((channel) => discord.createMessage(channel, getMessage(message, user.mention)));
+  const { channels = [], join: { message = '' } } = config.get(guild);
+  channels.forEach((channel) => discord.createMessage(channel, formatMessage(message, user.mention)));
 }
 
 /**
@@ -33,10 +37,10 @@ function handleJoin(guild, user) {
  * @param {Eris.Member} user
  */
 function handleLeave(guild, user) {
-  if (invalid(user, guild, 'leave')) return;
+  if (invalid(user, guild, 'leave') || !user.username) return;
 
   const { channels = [], leave: { message = '' } } = config.get(guild);
-  channels.forEach((channel) => discord.createMessage(channel, getMessage(message, user.mention)));
+  channels.forEach((channel) => discord.createMessage(channel, formatMessage(message, user.username)));
 }
 
 function invalid(user, guild, joinLeave) {
@@ -67,11 +71,4 @@ function throttled(guild) {
   
   config.set(guild, data);
   return Number.isInteger(data.enabled);
-}
-
-function getMessage(message, mention) {
-  return {
-    content: formatMessage(message, mention),
-    allowedMentions: { users: [] },
-  };
 }
